@@ -1,5 +1,22 @@
+:root {
+    --bg: #ffffff;
+    --fg: #000000;
+    --sec: #acacac;
+    font-size: 18px;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--bg);
+}
+
+h1, p:not(.secondary), button {
+    color: var(--fg);
+}
+
+.secondary {
+    color: var(--sec)
 }
