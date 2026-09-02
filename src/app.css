@@ -20,3 +20,7 @@ h1, p:not(.secondary), button {
 .secondary {
     color: var(--sec)
 }
+
+button {
+    cursor: pointer;
+}

@@ -68,8 +68,8 @@ const traderSlang = {
 
 const categories = Object.keys(traderSlang)
 
-function generateRandomCategory() {
+function generateRandomSentiment() {
   return categories[Math.floor(Math.random() * categories.length)]
 }
 
-export { traderSlang, generateRandomCategory }
+export { traderSlang, generateRandomSentiment }
