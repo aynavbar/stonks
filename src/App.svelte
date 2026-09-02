@@ -1,12 +1,12 @@
 <div class="app-container">
     <header>
-        <div class="ticker-container"><h1>$TSLA</h1></div>
-        <div class="change-ticker-button-container"><button>Change ticker</button></div>
+        <h1>$TSLA</h1>
+        <button class="change-ticker-button">Change ticker</button>
     </header>
     <main>
-        <div><p class="sentiment-text" id="sentiment-text">Paper Hands</p></div>
+        <p class="sentiment-text" id="sentiment-text">Paper Hands</p>
     </main>
-    <div class="mocking-text"><p class="secondary"><i>Today's going to be a great day</i></p></div>
+    <footer class="mocking-text"><p class="secondary"><i>Today's going to be a great day</i></p></footer>
 </div>
 
 <style>
@@ -15,7 +15,6 @@
         width: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
     }
 
     header {
@@ -34,11 +33,11 @@
         justify-content: center;
     }
 
-    .ticker-container h1 {
+    h1 {
         font-size: 1rem;
     }
 
-    .change-ticker-button-container button {
+    .change-ticker-button {
         padding-inline: 0.5rem;
         padding-block: 0.7rem;
         border-radius: 2rem;
@@ -54,5 +53,9 @@
 
     p.sentiment-text {
         font-size: clamp(2rem, 8vw, 5rem);
+    }
+
+    footer {
+        margin: auto;
     }
 </style>
