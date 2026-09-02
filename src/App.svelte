@@ -55,9 +55,4 @@
     p.sentiment-text {
         font-size: clamp(2rem, 8vw, 5rem);
     }
-
-    /*.mocking-text {
-        position: absolute;
-        bottom: 0.8rem;
-    }*/
 </style>
