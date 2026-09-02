@@ -1,7 +1,8 @@
 <script>
-    import { traderSlang, generateRandomSentiment } from "./lib/phrases.js"
+    import { traderSlang, generateRandomSentiment, colorMap } from "./lib/phrases.js"
 
     let tickerInputRef = $state();
+    let sentimentTextRef = $state();
     let intervalID = null;
 
     let selectedTicker = $state("");
@@ -18,8 +19,14 @@
       if (selectedTicker) {
         intervalID = null;
         intervalID = setInterval(() => {
+            sentimentTextRef?.classList.add("swap")
             const currentSentiment = generateRandomSentiment();
-            generateSentimentPhrase(currentSentiment)
+            setTimeout(() => {
+              generateSentimentPhrase(currentSentiment)
+              sentimentTextRef?.classList.remove("swap")
+              document.documentElement.style.setProperty("--bg", colorMap[sentimentPhrase].bg)
+              document.documentElement.style.setProperty("--fg", colorMap[sentimentPhrase].fg)
+            }, 250)
         }, 4000)
       }
 
@@ -42,7 +49,7 @@
         >Change ticker</button>
     </header>
     <main>
-        <p class="sentiment-text" id="sentiment-text">{sentimentPhrase ? sentimentPhrase : "_ _"}</p>
+        <p bind:this={sentimentTextRef} class="sentiment-text" id="sentiment-text">{sentimentPhrase ? sentimentPhrase : "_ _"}</p>
     </main>
     {#if showDialog}
         <div class="dialog-overlay">
@@ -122,7 +129,13 @@
     }
 
     p.sentiment-text {
-        font-size: clamp(2rem, 8vw, 5rem);
+        font-family: 'Archivo Black', 'Inter', sans-serif;
+        font-weight: 400;
+        font-size: clamp(2.5rem, 10vw, 7rem);
+        line-height: 0.95;
+        letter-spacing: -0.01em;
+        text-transform: uppercase;
+        transition: color 0.6s ease, opacity 0.25s ease, transform 0.25s ease;
     }
 
     .dialog-overlay {

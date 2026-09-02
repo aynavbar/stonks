@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
     --bg: #ffffff;
     --fg: #000000;
@@ -15,6 +17,11 @@
 
 h1, p:not(.secondary), button {
     color: var(--fg);
+}
+
+p.sentiment-text.swap {
+  opacity: 0;
+  transform: translateY(10px);
 }
 
 .secondary {
