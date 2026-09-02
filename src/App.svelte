@@ -1,7 +1,7 @@
 <script>
     import { traderSlang, generateRandomSentiment } from "./lib/phrases.js"
 
-    let phraseParagraphRef, tickerInputRef;
+    let tickerInputRef = $state();
     let intervalID = null;
 
     let selectedTicker = $state("");
@@ -42,7 +42,7 @@
         >Change ticker</button>
     </header>
     <main>
-        <p bind:this={phraseParagraphRef} class="sentiment-text" id="sentiment-text">{sentimentPhrase ? sentimentPhrase : "_ _"}</p>
+        <p class="sentiment-text" id="sentiment-text">{sentimentPhrase ? sentimentPhrase : "_ _"}</p>
     </main>
     {#if showDialog}
         <div class="dialog-overlay">
@@ -53,8 +53,9 @@
                         class="ticker-input"
                         bind:this={tickerInputRef}
                         onkeyup={(event) => {
-                          if (event.key === "Enter" && event.target.value.trim() !== "") {
-                            selectedTicker = event.target.value.trim()
+                          const inputValue = event.target.value.trim()
+                          if (event.key === "Enter" && inputValue !== "") {
+                            selectedTicker = inputValue;
                             showDialog = false;
                           }
                         }}
@@ -65,8 +66,9 @@
                       showDialog = false;
                     }}>Close</button>
                     <button onclick={() => {
-                      if (tickerInputRef.value.trim() !== "") {
-                        selectedTicker = tickerInputRef.value.trim()
+                      const inputValue = tickerInputRef.value.trim();
+                      if (inputValue !== "") {
+                        selectedTicker = inputValue;
                         showDialog = false;
                       }
                     }}>Choose</button>
@@ -74,7 +76,7 @@
             </div>
         </div>
     {/if}
-    <footer class="mocking-text"><p class="secondary"><i>Today's going to be a great day</i></p></footer>
+    <footer><p class="secondary"><i>Today is going to be a great day</i></p></footer>
 </div>
 
 <style>
@@ -182,5 +184,6 @@
 
     footer {
         margin: auto;
+        font-size: 0.8rem;
     }
 </style>
