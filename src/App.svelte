@@ -166,6 +166,10 @@
         display: flex;
         flex-direction: column;
         background-color: #ffffff;
+
+        * {
+            background-color: #ffffff;
+        }
     }
 
     .dialog label {
