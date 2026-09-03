@@ -66,6 +66,9 @@ const traderSlang = {
   ]
 };
 
+/**
+ * @type Record<string, Record<string, string>>
+ */
 const colorMap = {
   "Mooning": { bg: "#12321f", fg: "#3ee87f" },
   "Pumping": { bg: "#0f3d2e", fg: "#4ade80" },
@@ -130,6 +133,10 @@ const colorMap = {
 
 const categories = Object.keys(traderSlang)
 
+/**
+ *
+ * @returns {"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency" | any}
+ */
 function generateRandomSentiment() {
   return categories[Math.floor(Math.random() * categories.length)]
 }

@@ -1,14 +1,26 @@
 <script>
     import { traderSlang, generateRandomSentiment, colorMap } from "./lib/phrases.js"
 
+    let intervalID = 0;
+
+    /**
+     * @type HTMLInputElement | undefined
+     */
     let tickerInputRef = $state();
+
+    /**
+     * @type HTMLParagraphElement | undefined
+     */
     let sentimentTextRef = $state();
-    let intervalID = null;
 
     let selectedTicker = $state("");
     let sentimentPhrase = $state("");
-    let showDialog = $derived(selectedTicker == false)
+    let showDialog = $derived(selectedTicker ? false : true)
 
+    /**
+     *
+     * @param {"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency"} sentiment
+     */
     function generateSentimentPhrase(sentiment) {
       const phrase = traderSlang[sentiment][Math.floor(Math.random() * traderSlang[sentiment].length)]
 
@@ -17,15 +29,15 @@
 
     $effect(() => {
       if (selectedTicker) {
-        intervalID = null;
+        intervalID = 0;
         intervalID = setInterval(() => {
             sentimentTextRef?.classList.add("swap")
             const currentSentiment = generateRandomSentiment();
             setTimeout(() => {
               generateSentimentPhrase(currentSentiment)
               sentimentTextRef?.classList.remove("swap")
-              document.documentElement.style.setProperty("--bg", colorMap[sentimentPhrase].bg)
-              document.documentElement.style.setProperty("--fg", colorMap[sentimentPhrase].fg)
+              document.documentElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
+              document.documentElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
             }, 250)
         }, 4000)
       }
@@ -60,10 +72,9 @@
                         class="ticker-input"
                         bind:this={tickerInputRef}
                         onkeyup={(event) => {
-                          const inputValue = event.target.value.trim()
-                          if (event.key === "Enter" && inputValue !== "") {
+                          const inputValue = tickerInputRef?.value.trim()
+                          if (event.key === "Enter" && inputValue) {
                             selectedTicker = inputValue;
-                            showDialog = false;
                           }
                         }}
                         type="text">
@@ -73,10 +84,9 @@
                       showDialog = false;
                     }}>Close</button>
                     <button onclick={() => {
-                      const inputValue = tickerInputRef.value.trim();
-                      if (inputValue !== "") {
+                      const inputValue = tickerInputRef?.value.trim();
+                      if (inputValue) {
                         selectedTicker = inputValue;
-                        showDialog = false;
                       }
                     }}>Choose</button>
                 </div>
