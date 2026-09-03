@@ -1,5 +1,8 @@
 <script>
-    import { traderSlang, generateRandomSentiment, colorMap } from "./lib/phrases.js"
+    import "$lib/app.css";
+    import { traderSlang, generateRandomSentiment, colorMap } from "$lib/phrases.js"
+
+    import trapFocus from "$lib/attachments.js";
 
     let intervalID = 0;
     let isSamePhrase = false;
@@ -36,15 +39,16 @@
     $effect(() => {
       if (selectedTicker) {
         intervalID = 0;
+        const rootElement = document.documentElement;
         intervalID = setInterval(() => {
             if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
             const currentSentiment = generateRandomSentiment();
             setTimeout(() => {
               generateSentimentPhrase(currentSentiment)
               sentimentTextRef?.classList.remove("swap")
-              document.documentElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
-              document.documentElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
-            }, 250)
+              rootElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
+              rootElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
+            }, 250) // change the text and color while the text is invisible
         }, 4000)
       }
 
@@ -70,7 +74,7 @@
         <p bind:this={sentimentTextRef} class="sentiment-text" id="sentiment-text">{sentimentPhrase ? sentimentPhrase : "_ _"}</p>
     </main>
     {#if showDialog}
-        <div class="dialog-overlay">
+        <div class="dialog-overlay" {@attach trapFocus}>
             <div class="dialog">
                 <label>
                     Enter a stock ticker
@@ -82,8 +86,9 @@
                           const inputValue = tickerInputRef?.value.trim()
                           if (event.key === "Enter" && inputValue) {
                             selectedTicker = inputValue;
+                          } else if (!inputValue) {
+                            tickerInputRef?.classList.add("error");
                           }
-                          tickerInputRef?.classList.add("error");
                           setTimeout(() => {
                             tickerInputRef?.classList.remove("error")
                           }, 300)

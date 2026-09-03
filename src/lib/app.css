@@ -20,6 +20,10 @@ h1, p:not(.secondary), button {
     color: var(--fg);
 }
 
+/*
+swap transition for the text.
+it bounces back because transitions work both ways
+*/
 p.sentiment-text.swap {
   opacity: 0;
   transform: translateY(10px);
