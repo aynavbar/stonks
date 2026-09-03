@@ -2,6 +2,7 @@
     import { traderSlang, generateRandomSentiment, colorMap } from "./lib/phrases.js"
 
     let intervalID = 0;
+    let isSamePhrase = false;
 
     /**
      * @type HTMLInputElement | undefined
@@ -24,14 +25,19 @@
     function generateSentimentPhrase(sentiment) {
       const phrase = traderSlang[sentiment][Math.floor(Math.random() * traderSlang[sentiment].length)]
 
-      sentimentPhrase = phrase;
+      if (sentimentPhrase !== phrase) {
+        isSamePhrase = false;
+        sentimentPhrase = phrase;
+      } else {
+        isSamePhrase = true
+      }
     }
 
     $effect(() => {
       if (selectedTicker) {
         intervalID = 0;
         intervalID = setInterval(() => {
-            sentimentTextRef?.classList.add("swap")
+            if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
             const currentSentiment = generateRandomSentiment();
             setTimeout(() => {
               generateSentimentPhrase(currentSentiment)
@@ -69,6 +75,7 @@
                 <label>
                     Enter a stock ticker
                     <input
+                        name="ticker"
                         class="ticker-input"
                         bind:this={tickerInputRef}
                         onkeyup={(event) => {
@@ -76,6 +83,10 @@
                           if (event.key === "Enter" && inputValue) {
                             selectedTicker = inputValue;
                           }
+                          tickerInputRef?.classList.add("error");
+                          setTimeout(() => {
+                            tickerInputRef?.classList.remove("error")
+                          }, 300)
                         }}
                         type="text">
                 </label>
@@ -87,7 +98,13 @@
                       const inputValue = tickerInputRef?.value.trim();
                       if (inputValue) {
                         selectedTicker = inputValue;
+                        tickerInputRef?.classList.remove("error")
+                        return
                       }
+                      tickerInputRef?.classList.add("error");
+                      setTimeout(() => {
+                        tickerInputRef?.classList.remove("error")
+                      }, 300)
                     }}>Choose</button>
                 </div>
             </div>
@@ -145,6 +162,7 @@
         line-height: 0.95;
         letter-spacing: -0.01em;
         text-transform: uppercase;
+        background-color: transparent;
         transition: color 0.6s ease, opacity 0.25s ease, transform 0.25s ease;
     }
 
@@ -187,6 +205,7 @@
         padding-block: 0.3rem;
         padding-inline: 0.2rem;
         border-radius: 0.2rem;
+        transition: border-color 0.2ms ease;
     }
 
     .dialog .dialog-controls-container {
