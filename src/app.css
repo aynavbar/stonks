@@ -13,6 +13,7 @@
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
     background-color: var(--bg);
+    transition: background-color 0.6s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 h1, p:not(.secondary), button {
@@ -30,4 +31,23 @@ p.sentiment-text.swap {
 
 button {
     cursor: pointer;
+}
+
+.dialog .ticker-input.error {
+    animation: shake 0.3s ease-in-out;
+    border-color: #ff0e0e !important;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(-3px);
+    }
+
+    50% {
+        transform: translatex(3px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
