@@ -89,7 +89,7 @@
                         onkeyup={(event) => {
                           const inputValue = tickerInputRef?.value.trim()
                           if (event.key === "Enter" && inputValue) {
-                            selectedTicker = inputValue;
+                            selectedTicker = inputValue.toUpperCase();
                           } else if (!inputValue) {
                             tickerInputRef?.classList.add("error");
                           }
@@ -106,7 +106,7 @@
                     <button onclick={() => {
                       const inputValue = tickerInputRef?.value.trim();
                       if (inputValue) {
-                        selectedTicker = inputValue;
+                        selectedTicker = inputValue.toUpperCase();
                         tickerInputRef?.classList.remove("error")
                         return
                       }
@@ -218,6 +218,7 @@
         padding-inline: 0.2rem;
         border-radius: 0.2rem;
         transition: border-color 0.2ms ease;
+        text-transform: uppercase;
     }
 
     .dialog .dialog-controls-container {
