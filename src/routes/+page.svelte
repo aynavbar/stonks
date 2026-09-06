@@ -119,7 +119,10 @@
             </div>
         </div>
     {/if}
-    <footer><p class="secondary"><i>Today is going to be a great day</i></p></footer>
+    <footer>
+        <p class="secondary"><em>Today is going to be a great day</em></p>
+        <p class="secondary"><em>*For entertainment only — not financial advice</em></p>
+    </footer>
 </div>
 
 <style>
@@ -240,5 +243,6 @@
     footer {
         margin: auto;
         font-size: 0.8rem;
+        text-align: center;
     }
 </style>
