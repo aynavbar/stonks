@@ -1,6 +1,6 @@
 <script>
     import "$lib/app.css";
-    import { traderSlang, generateRandomSentiment, colorMap } from "$lib/phrases.js"
+    import { traderSlang, getSentiment, colorMap } from "$lib/phrases.js"
 
     import trapFocus from "$lib/attachments.js";
 
@@ -26,7 +26,8 @@
      * @param {"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency"} sentiment
      */
     function generateSentimentPhrase(sentiment) {
-      const phrase = traderSlang[sentiment][Math.floor(Math.random() * traderSlang[sentiment].length)]
+      if (sentiment?.length) {
+        const phrase = traderSlang[sentiment][Math.floor(Math.random() * traderSlang[sentiment].length)]
 
       if (sentimentPhrase !== phrase) {
         isSamePhrase = false;
@@ -34,22 +35,25 @@
       } else {
         isSamePhrase = true
       }
+      }
     }
 
     $effect(() => {
       if (selectedTicker) {
         intervalID = 0;
         const rootElement = document.documentElement;
-        intervalID = setInterval(() => {
-            if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
-            const currentSentiment = generateRandomSentiment();
-            setTimeout(() => {
+        intervalID = setInterval(async () => {
+            const currentSentiment = await getSentiment(selectedTicker);
+            if (!currentSentiment?.failedToFetch) {
+                if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
+            }
+            if (!currentSentiment?.error) setTimeout(() => {
               generateSentimentPhrase(currentSentiment)
               sentimentTextRef?.classList.remove("swap")
               rootElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
               rootElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
             }, 250) // change the text and color while the text is invisible
-        }, 4000)
+        }, 15000)
       }
 
       return () => {

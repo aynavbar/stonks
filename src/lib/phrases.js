@@ -1,58 +1,58 @@
 const traderSlang = {
   bullish: [
-    "Mooning",       // price rocketing up
-    "Pumping",       // rapid upward move
-    "Ripping",       // fast, aggressive rally
-    "Melting up",    // slow relentless grind higher
-    "Breakout",      // clearing resistance
-    "Squeeze",       // shorts forced to cover, price spikes
-    "FOMO",          // fear of missing out, chasing the move
-    "Diamond hands", // holding through volatility, refusing to sell
-    "To the moon",   // extreme bullish exuberance
-    "Printing"       // easily making money
+    "Mooning",
+    "Pumping",
+    "Ripping",
+    "Melting up",
+    "Breakout",
+    "Squeeze",
+    "FOMO",
+    "Diamond hands",
+    "To the moon",
+    "Printing"
   ],
   bearish: [
-    "Dumping",       // sharp sell-off
-    "Rekt",          // got wrecked / heavy losses
-    "Bagholding",    // stuck holding a losing position
-    "Capitulation",  // panic selling, giving up
-    "Bloodbath",     // brutal red day across the board
-    "Rug pull",      // sudden collapse, often orchestrated
-    "Dead cat bounce", // brief recovery in a downtrend
-    "Puking",        // forced/panicked selling
-    "Getting smoked", // taking heavy losses
-    "Underwater"     // position below entry price
+    "Dumping",
+    "Rekt",
+    "Bagholding",
+    "Capitulation",
+    "Bloodbath",
+    "Rug pull",
+    "Dead cat bounce",
+    "Puking",
+    "Getting smoked", 
+    "Underwater"
   ],
   fear: [
-    "Paper hands",   // selling out of fear too early
-    "Shook",         // rattled by volatility
+    "Paper hands",
+    "Shook",
     "Panic selling",
     "De-risking",
     "Flight to safety",
     "Risk-off",
     "Sweating bullets",
-    "Nervous chop"   // choppy price action causing anxiety
+    "Nervous chop"
   ],
   greed: [
-    "YOLO",          // all-in, high-risk bet
-    "Degen",         // reckless, high-risk trading behavior
-    "Levering up",   // taking on excessive leverage
-    "Chasing",       // buying after a big move out of greed
-    "Aping in",      // buying impulsively without research
+    "YOLO",
+    "Degen",
+    "Levering up",
+    "Chasing",
+    "Aping in",
     "Sending it",
-    "Cope and hope"  // holding a bad trade on hope, tinged with denial
+    "Cope and hope"
   ],
   uncertainty: [
-    "Chop",          // sideways, directionless price action
+    "Chop",
     "No man's land",
     "Coin flip",
     "Wait and see",
     "Range-bound",
-    "Indecision candle" // doji-like price action
+    "Indecision candle"
   ],
   euphoria: [
-    "Euphoric top",  // sentiment peak, often a reversal signal
-    "Vertical",      // straight-up price move
+    "Euphoric top",
+    "Vertical",
     "Parabolic",
     "Blow-off top",
     "Melt-up mania"
@@ -131,14 +131,61 @@ const colorMap = {
   "Priced in": { bg: "#212429", fg: "#cbd5e1" }
 };
 
-const categories = Object.keys(traderSlang)
-
 /**
- *
- * @returns {"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency" | any}
+ * 
+ * @param {Record<string, number>} quote 
+ * @returns {*}
  */
-function generateRandomSentiment() {
-  return categories[Math.floor(Math.random() * categories.length)]
+function getMarketMood(quote) {
+  const { c, h, l, o, pc } = quote;
+
+  const dp = ((c - pc) / pc) * 100;              // percent change vs prev close
+  const rangePct = ((h - l) / pc) * 100;          // today's range as % of price
+  // guard against h === l (can happen on very quiet/illiquid days)
+  const closePos = h === l ? 0.5 : (c - l) / (h - l); // 0 = closed at low, 1 = closed at high
+
+  // --- thresholds (tune these to taste) ---
+  const BIG_MOVE = 3;        // % change considered "sharp"
+  const SMALL_MOVE = 0.3;    // % change considered "flat"
+  const WIDE_RANGE = 2;      // day range % considered "choppy"
+  const GAP_UP = 1;          // % gap-up at open considered "chasing"
+
+  let mood;
+
+  if (dp > BIG_MOVE && closePos > 0.8) {
+    mood = "euphoria";
+  } else if (dp > SMALL_MOVE && o > pc * (1 + GAP_UP / 100) && c > o) {
+    mood = "greed";
+  } else if (dp < -BIG_MOVE && closePos < 0.2) {
+    mood = "fear";
+  } else if (dp > SMALL_MOVE) {
+    mood = "bullish";
+  } else if (dp < -SMALL_MOVE) {
+    mood = "bearish";
+  } else if (rangePct > WIDE_RANGE) {
+    mood = "uncertainty";
+  } else {
+    mood = "complacency";
+  }
+
+  return mood;
 }
 
-export { traderSlang, generateRandomSentiment, colorMap }
+/**
+ * @param {string} ticker 
+ * @returns {Promise<"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency" | any>}
+ */
+async function getSentiment(ticker) {
+  const res = await fetch(`/quote?symbol=${ticker}`).catch(() => {})
+
+  const data = await res?.json();
+
+  if (!res?.ok || res === undefined) {
+    console.error("Something went wrong while trying to reach Finnhub. Will try again on next fetch")
+    return {...data, failedToFetch: true};
+  }
+
+  return getMarketMood(data);
+}
+
+export { traderSlang, getSentiment, colorMap }
