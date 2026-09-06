@@ -165,6 +165,7 @@
 
     p {
         padding-block: 1.1rem;
+        padding-inline: 1rem;
     }
 
     p.sentiment-text {
@@ -174,6 +175,7 @@
         line-height: 0.95;
         letter-spacing: -0.01em;
         text-transform: uppercase;
+        text-align: center;
         background-color: transparent;
         transition: color 0.6s ease, opacity 0.25s ease, transform 0.25s ease;
     }
@@ -190,6 +192,7 @@
     }
 
     .dialog {
+        margin-inline: 1rem;
         width: 25rem;
         border-radius: 0.8rem;
         padding: 1.4rem;
