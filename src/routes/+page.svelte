@@ -25,7 +25,7 @@
      *
      * @param {"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency"} sentiment
      */
-    function generateSentimentPhrase(sentiment) {
+    function generatePhrase(sentiment) {
       if (sentiment?.length) {
         const phrase = traderSlang[sentiment][Math.floor(Math.random() * traderSlang[sentiment].length)]
 
@@ -38,22 +38,25 @@
       }
     }
 
+    async function updateSentiment() {
+      const rootElement = document.documentElement;
+      const currentSentiment = await getSentiment(selectedTicker);
+      if (!currentSentiment?.failedToFetch) {
+          if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
+      }
+      if (!currentSentiment?.error) setTimeout(() => {
+        generatePhrase(currentSentiment)
+        sentimentTextRef?.classList.remove("swap")
+        rootElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
+        rootElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
+      }, 250) // change the text and color while the text is invisible
+    }
+
     $effect(() => {
       if (selectedTicker) {
         intervalID = 0;
-        const rootElement = document.documentElement;
-        intervalID = setInterval(async () => {
-            const currentSentiment = await getSentiment(selectedTicker);
-            if (!currentSentiment?.failedToFetch) {
-                if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
-            }
-            if (!currentSentiment?.error) setTimeout(() => {
-              generateSentimentPhrase(currentSentiment)
-              sentimentTextRef?.classList.remove("swap")
-              rootElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
-              rootElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
-            }, 250) // change the text and color while the text is invisible
-        }, 15000)
+        updateSentiment(); // immediate change
+        intervalID = setInterval(() => { updateSentiment() }, 15000)
       }
 
       return () => {
