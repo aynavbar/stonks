@@ -1,31 +1,18 @@
-<script>
+<script lang="ts">
     import "$lib/app.css";
-    import { traderSlang, getSentiment, colorMap } from "$lib/phrases.js"
+    import { traderSlang, getSentiment, colorMap } from "$lib/phrases"
 
-    import trapFocus from "$lib/attachments.js";
+    let intervalID: number = 0;
+    let isSamePhrase: boolean = false;
 
-    let intervalID = 0;
-    let isSamePhrase = false;
+    let tickerInputRef: HTMLInputElement | undefined = $state();
+    let sentimentTextRef: HTMLParagraphElement | undefined = $state();
 
-    /**
-     * @type HTMLInputElement | undefined
-     */
-    let tickerInputRef = $state();
+    let selectedTicker: string = $state("");
+    let sentimentPhrase: string = $state("");
+    let showDialog: boolean = $derived(selectedTicker ? false : true)
 
-    /**
-     * @type HTMLParagraphElement | undefined
-     */
-    let sentimentTextRef = $state();
-
-    let selectedTicker = $state("");
-    let sentimentPhrase = $state("");
-    let showDialog = $derived(selectedTicker ? false : true)
-
-    /**
-     *
-     * @param {"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency"} sentiment
-     */
-    function generatePhrase(sentiment) {
+    function generatePhrase(sentiment: string) {
       if (sentiment?.length) {
         const phrase = traderSlang[sentiment][Math.floor(Math.random() * traderSlang[sentiment].length)]
 
@@ -81,7 +68,7 @@
         <p bind:this={sentimentTextRef} class="sentiment-text" id="sentiment-text">{sentimentPhrase ? sentimentPhrase : "_ _"}</p>
     </main>
     {#if showDialog}
-        <div class="dialog-overlay" {@attach trapFocus}>
+        <div class="dialog-overlay">
             <div class="dialog">
                 <label>
                     Enter a stock ticker

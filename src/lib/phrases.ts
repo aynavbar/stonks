@@ -1,4 +1,4 @@
-const traderSlang = {
+const traderSlang: Record<string, Array<string>> = {
   bullish: [
     "Mooning",
     "Pumping",
@@ -20,7 +20,7 @@ const traderSlang = {
     "Rug pull",
     "Dead cat bounce",
     "Puking",
-    "Getting smoked", 
+    "Getting smoked",
     "Underwater"
   ],
   fear: [
@@ -66,10 +66,7 @@ const traderSlang = {
   ]
 };
 
-/**
- * @type Record<string, Record<string, string>>
- */
-const colorMap = {
+const colorMap: Record<string, Record<string, string>> = {
   "Mooning": { bg: "#12321f", fg: "#3ee87f" },
   "Pumping": { bg: "#0f3d2e", fg: "#4ade80" },
   "Breaking out": { bg: "#0b3d3a", fg: "#2dd4bf" },
@@ -131,12 +128,7 @@ const colorMap = {
   "Priced in": { bg: "#212429", fg: "#cbd5e1" }
 };
 
-/**
- * 
- * @param {Record<string, number>} quote 
- * @returns {*}
- */
-function getMarketMood(quote) {
+function getMarketMood(quote: Record<string, number>) {
   const { c, h, l, o, pc } = quote;
 
   const dp = ((c - pc) / pc) * 100;              // percent change vs prev close
@@ -171,11 +163,7 @@ function getMarketMood(quote) {
   return mood;
 }
 
-/**
- * @param {string} ticker 
- * @returns {Promise<"bullish" | "bearish" | "fear" | "greed" | "uncertainty" | "euphoria" | "complacency" | any>}
- */
-async function getSentiment(ticker) {
+async function getSentiment(ticker: string) {
   const res = await fetch(`/quote?symbol=${ticker}`).catch(() => {})
 
   const data = await res?.json();
