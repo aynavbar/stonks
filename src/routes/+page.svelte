@@ -27,6 +27,7 @@
 
     async function updateSentiment() {
       const rootElement = document.documentElement;
+      const colorMeta = document.querySelector("meta[name='theme-color']")
       const currentSentiment = await getSentiment(selectedTicker);
       if (!currentSentiment?.failedToFetch) {
           if (!isSamePhrase) sentimentTextRef?.classList.add("swap")
@@ -34,7 +35,9 @@
       if (!currentSentiment?.error) setTimeout(() => {
         generatePhrase(currentSentiment)
         sentimentTextRef?.classList.remove("swap")
-        rootElement.style.setProperty("--bg", colorMap[sentimentPhrase]?.bg)
+        const backgroundColor = colorMap[sentimentPhrase]?.bg
+        rootElement.style.setProperty("--bg", backgroundColor)
+        colorMeta?.setAttribute("content", backgroundColor)
         rootElement.style.setProperty("--fg", colorMap[sentimentPhrase]?.fg)
       }, 250) // change the text and color while the text is invisible
     }
